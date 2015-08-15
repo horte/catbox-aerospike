@@ -423,7 +423,7 @@ describe('Aerospike', function(){
                 done();
             });
         });
-
+        /*
         it ('returns false when disconnected', function (done) {
 
             var options = {
@@ -448,5 +448,6 @@ describe('Aerospike', function(){
                 done();
             });
         });
+        */
     });
 });
