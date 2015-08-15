@@ -19,6 +19,7 @@ install:
     - sudo ./bin/aerospike start
     - cd ../..
     - sleep 3
+    - sudo tail -n 1000 aerospike-server/instance1/var/log/aerospike.log
 
 script:
   - npm install
