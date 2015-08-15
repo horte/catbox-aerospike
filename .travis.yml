@@ -3,7 +3,7 @@ language: node_js
 node_js:
   - 0.10
 
-before_install:
+install:
   - sudo apt-get install autoconf libssl-dev liblua5.1 liblua5.1-dev
   - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.so /usr/lib/liblua.so
   - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.a /usr/lib/liblua.a
@@ -15,5 +15,8 @@ before_install:
   - cd instance1
   - sudo ./bin/aerospike start
   - cd ../..
-  - npm install
   - sleep 5
+
+script:
+  - npm install
+  - npm test
