@@ -1,8 +1,11 @@
+before_install:
+  - wget -O aerospike.tgz 'http://aerospike.com/download/server/latest/artifact/ubuntu12'
+  - tar -xvf aerospike.tgz
+  - cd aerospike-server-community-*-ubuntu12*
+  - sudo ./asinstall
+  - sudo service aerospike start && 
+
 language: node_js
 
 node_js:
   - 0.10
-  - 0.12
-
-services:
-  - aerospike
