@@ -1,12 +1,13 @@
+sudo: true
+
 language: node_js
 
 node_js:
   - 0.10
 
 install:
-  - wget -N -q0- https://get.docker.com/ | sh
-  - sudo docker pull sunnybhanot/aerospike
-  - sudo docker run -it -p "3000:3000" sunnybhanot/aerospike
+  - curl -sLo - http://j.mp/install-travis-docker | sh -xe
+  - ./run docker run -it -p "3000:3000" sunnybhanot/aerospike
   - sleep 5
 
 script:
