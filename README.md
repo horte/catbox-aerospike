@@ -1,5 +1,6 @@
 # catbox-aerospike
 Aerospike adapter for catbox
+[![Build Status](https://travis-ci.org/ooogway/catbox-aerospike.svg?branch=master)](https://travis-ci.org/ooogway/catbox-aerospike)
 
 ## Options
 
