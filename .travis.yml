@@ -9,7 +9,7 @@ before_install:
   - ./bin/aerospike init --home instance1 --instance 1 --service-port 3000
   - cd instance1
   - sudo ./bin/aerospike start
-  - cd 
+  - cd ../ooogway/catbox-aerospike
   - sleep 5
 
 language: node_js
