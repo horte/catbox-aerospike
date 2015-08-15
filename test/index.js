@@ -677,10 +677,12 @@ describe('Aerospike', function(){
                 hosts: [{
                     addr: '127.0.0.1',
                     port: 3000
-                }]
+                }],
+                partition: 'test',
+                segment: 'test'
             };
             var key = {
-                id: 'notfound'
+                id: 'notfound',
             };
 
             var aerospike = new Aerospike(options);
