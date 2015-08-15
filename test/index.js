@@ -248,6 +248,15 @@ describe('Aerospike', function(){
         });
     });
 
+    it('returns error on non string / object keys', function(done){
+
+        var client = new Catbox.Client(Aerospike);
+        var key = [{namespace: 'test', segment: 'test', id: 'asdf'}];
+        var result = client.connection.generateKey(key);
+        expect(result).to.be.instanceOf(Error);
+        done();
+    });
+
     it('returns error on set when stopped', function (done) {
 
         var client = new Catbox.Client(Aerospike);
@@ -423,6 +432,10 @@ describe('Aerospike', function(){
                 done();
             });
         });
+
+        // Aerospike client does not trigger on close event
+        // Hard to detect and update isReady status
+        // Need to figure out a solution
         /*
         it ('returns false when disconnected', function (done) {
 
@@ -449,5 +462,380 @@ describe('Aerospike', function(){
             });
         });
         */
+    });
+    describe('#validateSegmentName', function () {
+
+        it('returns an error when the name is empty', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+
+            var result = aerospike.validateSegmentName('');
+
+            expect(result).to.be.instanceOf(Error);
+            expect(result.message).to.equal('Empty string');
+            done();
+        });
+
+        it('returns an error when the name has a null character', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+
+            var result = aerospike.validateSegmentName('\0test');
+
+            expect(result).to.be.instanceOf(Error);
+            done();
+        });
+
+        it('returns null when there aren\'t any errors', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+
+            var result = aerospike.validateSegmentName('valid');
+
+            expect(result).to.not.be.instanceOf(Error);
+            expect(result).to.equal(null);
+            done();
+        });
+    });
+
+    describe('#get', function () {
+
+        it('passes an error to the callback when the connection is closed', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+
+            aerospike.get('test', function (err) {
+
+                expect(err).to.exist();
+                expect(err).to.be.instanceOf(Error);
+                expect(err.message).to.equal('Connection not started');
+                done();
+            });
+        });
+
+        it('passes an error to the callback when there is an error returned from getting an item', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+            aerospike.client = {
+                get: function (item, callback) {
+
+                    callback({code: 'ERR'});
+                }
+            };
+
+            aerospike.get('test', function (err) {
+
+                expect(err).to.exist();
+                expect(err).to.be.instanceOf(Error);
+                done();
+            });
+        });
+
+        it('passes an error to the callback when there is an error parsing the result', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+            aerospike.client = {
+                get: function (item, callback) {
+
+                    callback({code: 0}, 'test');
+                }
+            };
+
+            aerospike.get('test', function (err) {
+
+                expect(err).to.exist();
+                expect(err.message).to.equal('Bad envelop content');
+                done();
+            });
+        });
+
+        it('passes an error to the callback when there is an error with the envelope structure (stored)', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+            aerospike.client = {
+                get: function (item, callback) {
+
+                    callback({code: 0}, '{ "item": "false" }');
+                }
+            };
+
+            aerospike.get('test', function (err) {
+
+                expect(err).to.exist();
+                expect(err.message).to.equal('Bad envelop content');
+                done();
+            });
+        });
+
+        it('passes an error to the callback when there is an error with the envelope structure (item)', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+            aerospike.client = {
+                get: function (item, callback) {
+
+                    callback({code: 0}, '{ "stored": "123" }');
+                }
+            };
+
+            aerospike.get('test', function (err) {
+
+                expect(err).to.exist();
+                expect(err.message).to.equal('Bad envelop content');
+                done();
+            });
+        });
+
+        it('is able to retrieve an object thats stored when connection is started', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+            var key = {
+                id: 'test',
+                segment: 'test'
+            };
+
+            var aerospike = new Aerospike(options);
+
+            aerospike.start(function () {
+
+                aerospike.set(key, 'myvalue', 200, function (err) {
+
+                    expect(err).to.not.exist();
+                    aerospike.get(key, function (err, result) {
+
+                        expect(err).to.not.exist();
+                        expect(result.item).to.equal('myvalue');
+                        done();
+                    });
+                });
+            });
+        });
+
+        it('returns null when unable to find the item', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+            var key = {
+                id: 'notfound'
+            };
+
+            var aerospike = new Aerospike(options);
+
+            aerospike.start(function () {
+
+                aerospike.get(key, function (err, result) {
+                    expect(err).to.not.exist();
+                    expect(result).to.not.exist();
+                    done();
+                });
+            });
+        });
+    });
+
+    describe('#set', function () {
+
+        it('passes an error to the callback when the connection is closed', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+
+            aerospike.set('test1', 'test1', 3600, function (err) {
+
+                expect(err).to.exist();
+                expect(err).to.be.instanceOf(Error);
+                expect(err.message).to.equal('Connection not started');
+                done();
+            });
+        });
+
+        it('passes an error to the callback when there is an error returned from setting an item', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+            aerospike.client = {
+                put: function (key, item, meta, callback) {
+
+                    callback({code: 'err'});
+                }
+            };
+
+            aerospike.set('test', 'test', 3600, function (err) {
+
+                expect(err).to.exist();
+                expect(err).to.be.instanceOf(Error);
+                done();
+            });
+        });
+    });
+
+    describe('#drop', function () {
+
+        it('passes an error to the callback when the connection is closed', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+
+            aerospike.drop('test2', function (err) {
+
+                expect(err).to.exist();
+                expect(err).to.be.instanceOf(Error);
+                expect(err.message).to.equal('Connection not started');
+                done();
+            });
+        });
+
+        it('passes an error to the callback when there is an error returned from dropping an item', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+            aerospike.client = {
+                remove: function (key, callback) {
+
+                    callback({code: 'err'}, null);
+                }
+            };
+
+            aerospike.drop('test', function (err) {
+
+                expect(err).to.exist();
+                expect(err).to.be.instanceOf(Error);
+                done();
+            });
+        });
+
+        it('deletes the item from aerospike', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+            aerospike.client = {
+                remove: function (key, callback) {
+
+                    callback({code: 0}, null);
+                }
+            };
+
+            aerospike.drop('test', function (err) {
+
+                expect(err).to.not.exist();
+                done();
+            });
+        });
+    });
+
+    describe('#stop', function () {
+
+        it('sets the client to null', function (done) {
+
+            var options = {
+                hosts: [{
+                    addr: '127.0.0.1',
+                    port: 3000
+                }]
+            };
+
+            var aerospike = new Aerospike(options);
+
+            aerospike.start(function () {
+
+                expect(aerospike.client).to.exist();
+                aerospike.stop();
+                expect(aerospike.client).to.not.exist();
+                done();
+            });
+        });
     });
 });
