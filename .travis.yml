@@ -4,7 +4,7 @@ node_js:
   - 0.10
 
 install:
-  - sudo apt-get install curl -y
+  - sudo apt-get install curl
   - curl -sSL https://get.docker.com/ | sh
   - sudo docker pull sunnybhanot/aerospike
   - sudo docker run -it -p "3000:3000" sunnybhanot/aerospike
