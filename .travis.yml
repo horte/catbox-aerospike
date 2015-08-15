@@ -4,7 +4,6 @@ before_install:
   - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.a /usr/lib/liblua.a
   - wget -O aerospike-server.tgz http://aerospike.com/download/server/latest/artifact/tgz
   - tar xvzf aerospike-server.tgz
-  - cp -f .travis/aerospike.conf ./aerospike-server/share/etc
   - cd aerospike-server
   - mkdir instance1
   - ./bin/aerospike init --home instance1 --instance 1 --service-port 3000
