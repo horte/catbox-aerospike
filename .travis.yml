@@ -6,9 +6,19 @@ node_js:
   - 0.10
 
 install:
-  - curl -sLo - http://j.mp/install-travis-docker | sh -xe
-  - ./run docker run -it -p "3000:3000" sunnybhanot/aerospike
-  - sleep 5
+    - sudo apt-get install autoconf libssl-dev liblua5.1 liblua5.1-dev
+    - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.so /usr/lib/liblua.so
+    - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.a /usr/lib/liblua.a
+    - wget -O aerospike-server.tgz http://aerospike.com/download/server/latest/artifact/tgz
+    - tar xvzf aerospike-server.tgz
+    - cp -f .travis/aerospike.conf ./aerospike-server/share/etc
+    - cd aerospike-server
+    - mkdir instance1
+    - ./bin/aerospike init --home instance1 --instance 1 --service-port 3000
+    - cd instance1
+    - sudo ./bin/aerospike start
+    - cd ../..
+    - sleep 3
 
 script:
   - npm install
