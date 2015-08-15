@@ -2,8 +2,8 @@
     "name": "catbox-aerospike",
     "description": "Aerospike adapter for catbox",
     "version": "0.0.1",
-    "author": "Sunny Bhanot <sunnybhanot@gmail.com>",
-    "repository": "git://github.com/sunnybhanot/catbox-aerospike",
+    "author": "Sunny Bhanot",
+    "repository": "git://github.com/ooogway/catbox-aerospike",
     "main": "index",
     "keywords": [
         "cache",
@@ -28,7 +28,7 @@
     "licenses": [
         {
             "type": "BSD",
-            "url": "http://github.com/sunnybhanot/catbox-aerospike/raw/master/LICENSE"
+            "url": "http://github.com/ooogway/catbox-aerospike/raw/master/LICENSE"
         }
     ]
 }
