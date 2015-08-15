@@ -6,16 +6,16 @@ node_js:
   - 0.10
 
 before_install:
-  - apt-get install autoconf libssl-dev liblua5.1 liblua5.1-dev
-  - ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.so /usr/lib/liblua.so
-  - ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.a /usr/lib/liblua.a
+  - sudo apt-get install autoconf libssl-dev liblua5.1 liblua5.1-dev
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.so /usr/lib/liblua.so
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.a /usr/lib/liblua.a
   - wget -O aerospike-server.tgz http://aerospike.com/download/server/latest/artifact/tgz
   - tar xvzf aerospike-server.tgz
   - cd aerospike-server
   - mkdir instance1
   - ./bin/aerospike init --home instance1 --instance 1 --service-port 3000
   - cd instance1
-  - ./bin/aerospike start
+  - sudo ./bin/aerospike start
   - cd ../..
   - npm install
   - sleep 5
