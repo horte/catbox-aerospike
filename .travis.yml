@@ -4,22 +4,36 @@ language: node_js
 
 node_js:
   - 0.10
+  - 4.1
+
+env:
+  - CXX=g++-4.8
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+
+before_install:
+  - node --version | grep -q 'v0.8' && npm install -g npm@2 || true
 
 install:
-    - sudo apt-get install autoconf libssl-dev liblua5.1 liblua5.1-dev
-    - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.so /usr/lib/liblua.so
-    - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.a /usr/lib/liblua.a
-    - wget -O aerospike-server.tgz http://aerospike.com/download/server/latest/artifact/tgz
-    - tar xvzf aerospike-server.tgz
-    - cp -f .travis/aerospike.conf ./aerospike-server/share/etc
-    - cd aerospike-server
-    - mkdir instance1
-    - ./bin/aerospike init --home instance1 --instance 1 --service-port 3000
-    - cd instance1
-    - sudo ./bin/aerospike start
-    - cd ../..
-    - sleep 3
-    - sudo tail -n 1000 aerospike-server/instance1/var/log/aerospike.log
+  - sudo apt-get install autoconf libssl0.9.8 libssl-dev liblua5.1 liblua5.1-dev
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.so /usr/lib/liblua.so
+  - sudo ln -s /usr/lib/x86_64-linux-gnu/liblua5.1.a /usr/lib/liblua.a
+  - wget -O aerospike-server.tgz http://aerospike.com/download/server/latest/artifact/tgz
+  - tar xvzf aerospike-server.tgz
+  - cp -f .travis/aerospike.conf ./aerospike-server/share/etc
+  - cd aerospike-server
+  - mkdir instance1
+  - ./bin/aerospike init --home instance1 --instance 1 --service-port 3000
+  - cd instance1
+  - sudo ./bin/aerospike start
+  - cd ../..
+  - sleep 3
+  - sudo tail -n 1000 aerospike-server/instance1/var/log/aerospike.log
 
 script:
   - npm install
