@@ -1,7 +1,7 @@
 {
     "name": "catbox-aerospike",
     "description": "Aerospike adapter for catbox",
-    "version": "0.1.3",
+    "version": "1.0.0",
     "author": "Sunny Bhanot",
     "repository": "git://github.com/ooogway/catbox-aerospike",
     "main": "index",
@@ -11,7 +11,7 @@
         "aerospike"
     ],
     "engines": {
-        "node": ">=0.10.30"
+        "node": ">=4.0.0"
     },
     "dependencies": {
         "aerospike": "1.x.x",

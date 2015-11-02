@@ -1,14 +1,23 @@
 # catbox-aerospike
-[Aerospike](http://www.aerospike.com) adapter for [catbox](https://github.com/hapijs/catbox)
-* `catbox`: 6.x, 7.x
-* `node.js`: > 0.10.30, 4.x.x
+[Aerospike](http://www.aerospike.com) adapter for [catbox](https://github.com/hapijs/catbox) v **7.x.x**
+
+* `v 1.x.x`: `node v 4.x.x` and `catbox v >= 6.x`
+* `v 0.1.x`: `node v 0.10.x` and `catbox v 6.x`
+
+`Catbox` v 7.x.x has breaking changes and is compatible with `node.js v 4.x.x`
 
 [![npm version](https://badge.fury.io/js/catbox-aerospike.png)](http://npmjs.org/package/catbox-aerospike)
 [![Build Status](https://travis-ci.org/ooogway/catbox-aerospike.svg?branch=master)](https://travis-ci.org/ooogway/catbox-aerospike)
 
 ## Installation
+**Node v 4**
+```sh
+$ npm install catbox-aerospike --save
 ```
-npm install catbox-aerospike --save
+
+**Node v 0.10.x**
+```sh
+$ npm install catbox-aerospike@0.1.x --save
 ```
 
 ## Options
