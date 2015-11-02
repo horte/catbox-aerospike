@@ -3,6 +3,7 @@ var Code = require('code');
 var Lab = require('lab');
 var Catbox = require('catbox');
 var Aerospike = require('..');
+var Log = require('aerospike').log;
 
 // Internals
 var internals = {};
@@ -357,7 +358,7 @@ describe('Aerospike', function(){
                 expect(err).to.not.exist();
                 var client = aerospike.client;
 
-                aerospike.start(function () {
+                aerospike.start(function (err) {
 
                     expect(client).to.equal(aerospike.client);
                     done();
@@ -371,7 +372,10 @@ describe('Aerospike', function(){
                 hosts: [{
                     addr: '127.0.0.1',
                     port: 3005
-                }]
+                }],
+                log: {
+                    level: Log.OFF
+                }
             };
 
             var aerospike = new Aerospike(options);

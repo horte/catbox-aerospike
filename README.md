@@ -1,7 +1,15 @@
 # catbox-aerospike
-[Aerospike](http://www.aerospike.com) adapter for [catbox](https://github.com/hapijs/catbox)  
+[Aerospike](http://www.aerospike.com) adapter for [catbox](https://github.com/hapijs/catbox)
+* `catbox`: 6.x, 7.x
+* `node.js`: > 0.10.30, 4.x.x
+
 [![npm version](https://badge.fury.io/js/catbox-aerospike.png)](http://npmjs.org/package/catbox-aerospike)
 [![Build Status](https://travis-ci.org/ooogway/catbox-aerospike.svg?branch=master)](https://travis-ci.org/ooogway/catbox-aerospike)
+
+## Installation
+```
+npm install catbox-aerospike --save
+```
 
 ## Options
 
@@ -13,15 +21,95 @@
 
 **NOTE** Aerospike Namespaces are configured when the cluster is started, and cannot be created at runtime. Default Aerospike namespace is `test`. However, Catbox intializes adapters with default partition name `catbox`, if no partition name is configured. Please refer to [Namespace Configuration](http://www.aerospike.com/docs/operations/configure/namespace/) to use appropriate namespace.
 
+## Initialization
+
+```javascript
+var Hapi = require('hapi');
+
+var server = new Hapi.Server({
+    cache: [
+        {
+            name: 'aeroCache',
+            engine: require('catbox-aerospike'),
+            partition: 'cache'
+            host: [
+                {
+                    addr: '127.0.0.1',
+                    port: 3000
+                }
+            ]
+        }
+    ]
+});
+```
+**Using Glue Manifest JSON:**
+```javascript
+{
+    "server": {
+        "app": {
+
+        },
+        "connections": {
+
+        },
+        "cache": {
+            "name": "aeroCache"
+            "engine": "catbox-aerospike"
+            "partition": "cache"
+            "hosts": [
+                {
+                    "addr": "127.0.0.1",
+                    "port": 3000
+                }
+            ]
+        }
+    },
+    "connections": {
+
+    },
+    "plugins": {
+
+    }
+}
+```
+
+## Usage
+
+```javascript
+var add = function (a, b, next) {
+
+    return next(null, Number(a) + Number(b));
+};
+
+server.method('sum', add, {
+    cache: {
+        cache: 'aeroCache',
+        expiresIn: 30 * 1000,
+        generateTimeout: 100
+    }
+});
+
+server.route({
+    path: '/add/{a}/{b}',
+    method: 'GET',
+    handler: function (request, reply) {
+
+        server.methods.sum(request.params.a, request.params.b, function (err, result) {
+
+            reply(result);
+        });
+    }
+});
+```
+
 ## Tests
 
 The test suite expects an Aerospike server to be running on port 3000. Refer to Aerospike [Installation guide](http://www.aerospike.com/docs/operations/install/) OR run Aerospike server in a Docker container
 
 ```sh
-$ docker run -it -p 3000:3000 -p 3001:3001 -p 3002:3002 -p 3003:3003 aerospike/aerospike-server
-```
+// Running Aerospike Server
+$ docker run -it -d -p 3000:3000 aerospike/aerospike-server
 
-### Running Tests
-```sh
+// Running Tests
 $ npm test
 ```
