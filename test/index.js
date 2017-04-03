@@ -583,7 +583,7 @@ describe('Aerospike', function(){
             aerospike.client = {
                 get: function (item, callback) {
 
-                    callback({code: 0}, 'test');
+                    callback(null, 'test');
                 }
             };
 
@@ -608,7 +608,7 @@ describe('Aerospike', function(){
             aerospike.client = {
                 get: function (item, callback) {
 
-                    callback({code: 0}, '{ "item": "false" }');
+                    callback(null, '{ "item": "false" }');
                 }
             };
 
@@ -633,7 +633,7 @@ describe('Aerospike', function(){
             aerospike.client = {
                 get: function (item, callback) {
 
-                    callback({code: 0}, '{ "stored": "123" }');
+                    callback(null, '{ "stored": "123" }');
                 }
             };
 
@@ -810,7 +810,7 @@ describe('Aerospike', function(){
             aerospike.client = {
                 remove: function (key, callback) {
 
-                    callback({code: 0}, null);
+                    callback(null, null);
                 }
             };
 
