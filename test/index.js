@@ -72,7 +72,7 @@ describe('Aerospike', function(){
         var client = new Catbox.Client(Aerospike);
         client.start(function(err){
 
-            var key = {namespace: 'test', id: 'x', segment: 'test'};
+            var key = {namespace: 'test', id: 'z', segment: 'test'};
             client.set(key, '123', 1000, function(err){
                 expect(err).to.not.exist();
                 client.get(key, function(err, result){
@@ -97,7 +97,7 @@ describe('Aerospike', function(){
         var client = new Catbox.Client(Aerospike);
         client.start(function(err){
             
-            var key = {namespace: 'test', id: 'x', segment: 'test'};
+            var key = {namespace: 'test', id: 'y', segment: 'test'};
             var value = {a: 1};
             value.b = value;
             client.set(key, value, 10, function(err){
