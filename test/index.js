@@ -67,31 +67,6 @@ describe('Aerospike', function(){
         });
     });
 
-    it('with provided ttl', function(done){
-
-        var client = new Catbox.Client(Aerospike);
-        client.start(function(err){
-
-            var key = {namespace: 'test', id: 'z', segment: 'test'};
-            client.set(key, '123', 1000, function(err){
-                expect(err).to.not.exist();
-                client.get(key, function(err, result){
-                    expect(err).to.equal(null);
-                    expect(result.item).to.equal('123');
-                });
-
-                setTimeout(function() {
-                  client.get(key, function(err, result){
-                      expect(err).to.equal(null);
-                      expect(result).to.equal(null);
-                      done();
-                  });
-                }, 1500);
-
-            });
-        });
-    });
-
     it('fails setting an item with circular references', function(done){
 
         var client = new Catbox.Client(Aerospike);
@@ -165,7 +140,7 @@ describe('Aerospike', function(){
         client.start(function(err){
 
             var key = {id: 'x', namespace: 'test', segment: 'test'};
-            client.set(key, 'x', 1, function(err){
+            client.set(key, 'x', 1000, function(err){
 
                 expect(err).to.not.exist();
                 setTimeout(function(){
@@ -176,7 +151,7 @@ describe('Aerospike', function(){
                         expect(result).to.equal(null);
                         done();
                     });
-                }, 2);
+                }, 1500);
             });
         });
     });
