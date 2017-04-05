@@ -67,6 +67,23 @@ describe('Aerospike', function(){
         });
     });
 
+    it('gets an item with value zero (0)', function(done){
+
+        var client = new Catbox.Client(Aerospike);
+        client.start(function(err){
+
+            var key = {namespace: 'test', id: 'x', segment: 'test'};
+            client.set(key, 0, 500, function(err){
+                expect(err).to.not.exist();
+                client.get(key, function(err, result){
+                    expect(err).to.equal(null);
+                    expect(result.item).to.equal(0);
+                    done();
+                });
+            });
+        });
+    });
+
     it('fails setting an item with circular references', function(done){
 
         var client = new Catbox.Client(Aerospike);
