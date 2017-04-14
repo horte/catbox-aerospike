@@ -67,12 +67,29 @@ describe('Aerospike', function(){
         });
     });
 
+    it('gets an item with value zero (0)', function(done){
+
+        var client = new Catbox.Client(Aerospike);
+        client.start(function(err){
+
+            var key = {namespace: 'test', id: 'x', segment: 'test'};
+            client.set(key, 0, 500, function(err){
+                expect(err).to.not.exist();
+                client.get(key, function(err, result){
+                    expect(err).to.equal(null);
+                    expect(result.item).to.equal(0);
+                    done();
+                });
+            });
+        });
+    });
+
     it('fails setting an item with circular references', function(done){
 
         var client = new Catbox.Client(Aerospike);
         client.start(function(err){
             
-            var key = {namespace: 'test', id: 'x', segment: 'test'};
+            var key = {namespace: 'test', id: 'y', segment: 'test'};
             var value = {a: 1};
             value.b = value;
             client.set(key, value, 10, function(err){
@@ -140,7 +157,7 @@ describe('Aerospike', function(){
         client.start(function(err){
 
             var key = {id: 'x', namespace: 'test', segment: 'test'};
-            client.set(key, 'x', 1, function(err){
+            client.set(key, 'x', 1000, function(err){
 
                 expect(err).to.not.exist();
                 setTimeout(function(){
@@ -151,7 +168,7 @@ describe('Aerospike', function(){
                         expect(result).to.equal(null);
                         done();
                     });
-                }, 2);
+                }, 1500);
             });
         });
     });
@@ -583,7 +600,7 @@ describe('Aerospike', function(){
             aerospike.client = {
                 get: function (item, callback) {
 
-                    callback({code: 0}, 'test');
+                    callback(null, 'test');
                 }
             };
 
@@ -608,7 +625,7 @@ describe('Aerospike', function(){
             aerospike.client = {
                 get: function (item, callback) {
 
-                    callback({code: 0}, '{ "item": "false" }');
+                    callback(null, '{ "item": "false" }');
                 }
             };
 
@@ -633,7 +650,7 @@ describe('Aerospike', function(){
             aerospike.client = {
                 get: function (item, callback) {
 
-                    callback({code: 0}, '{ "stored": "123" }');
+                    callback(null, '{ "stored": "123" }');
                 }
             };
 
@@ -810,7 +827,7 @@ describe('Aerospike', function(){
             aerospike.client = {
                 remove: function (key, callback) {
 
-                    callback({code: 0}, null);
+                    callback(null, null);
                 }
             };
 
