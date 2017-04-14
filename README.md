@@ -1,9 +1,13 @@
 # catbox-aerospike
-Caching Adapter for [Aerospike](http://www.aerospike.com) **v 3.6.x** for [catbox](https://github.com/hapijs/catbox) v **7.x.x**
+Caching Adapter for [Aerospike](http://www.aerospike.com) for [catbox](https://github.com/hapijs/catbox)
 
-**Version: 1.0**
+**Tested with**  
+Aerospike >= v3.9.x  
+Aerospike npm package >= 2.4.x  
+Catbox >= 7.x.x  
 
 ## Versions
+* `v 2.x.x`: `node v 4.x.x` and `catbox v >= 7.x`
 * `v 1.x.x`: `node v 4.x.x` and `catbox v >= 6.x`
 * `v 0.1.x`: `node v 0.10.x` and `catbox v 6.x`
 
